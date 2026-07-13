@@ -1,0 +1,19 @@
+
+{
+  // We don't directly compile any files here.
+  // This file only coordinates other tsconfigs (like app + node configs).
+  "files": [],
+
+  // Project References:
+  // This tells TypeScript: "These are separate sub-projects you must manage"
+  "references": [
+    {
+      // Main application code (everything inside /src)
+      "path": "./tsconfig.app.json"
+    },
+    {
+      // Node/tooling files like drizzle.config.ts, vite.config.ts, etc.
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}
