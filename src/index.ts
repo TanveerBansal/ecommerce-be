@@ -1,6 +1,6 @@
 import fastify from "fastify";
-import { env } from "./config/env";
-import { HttpError } from "./shared";
+import { env } from "./config/env.js";
+import { HttpError } from "./shared/helpers/HttpError.js";
 
 const app = fastify();
 
@@ -17,19 +17,19 @@ const app = fastify();
  * and return its default error response structure.
  */
 app.setErrorHandler((error, request, reply) => {
-    if (error instanceof HttpError) {
-        return reply.status(error.statusCode).send({
-            message: error.message,
-            error: error.error,
-        });
-    }
-
-    request.log.error(error);
-
-    return reply.status(500).send({
-        message: "Internal Server Error",
-        error: "INTERNAL_SERVER_ERROR",
+  if (error instanceof HttpError) {
+    return reply.status(error.statusCode).send({
+      message: error.message,
+      error: error.error,
     });
+  }
+
+  request.log.error(error);
+
+  return reply.status(500).send({
+    message: "Internal Server Error",
+    error: "INTERNAL_SERVER_ERROR",
+  });
 });
 
 app.get("/", () => {
@@ -47,4 +47,3 @@ const start = async () => {
 };
 
 start();
-

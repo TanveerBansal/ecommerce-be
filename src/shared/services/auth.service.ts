@@ -1,10 +1,9 @@
-import { Signup } from "@/shared";
-import { db } from "@/db";
-import { usersSchema } from "@/db/schema";
+import { Signup } from "../../shared/types/auth.types.js";
+import { db } from "../../db/index.js";
 
 export class AuthService {
   async signup(userData: Signup) {
-    const { password, email, ...rest } = userData;
+    const { email } = userData;
     const trimmedEmail = email.toLowerCase().trim();
 
     const isExistingUser = await db.query.usersSchema.findFirst({
@@ -12,8 +11,7 @@ export class AuthService {
       columns: { id: true, email: true },
     });
 
-    if(isExistingUser){
-        
+    if (isExistingUser) {
     }
   }
 }

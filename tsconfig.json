@@ -1,19 +1,44 @@
-
 {
-  // We don't directly compile any files here.
-  // This file only coordinates other tsconfigs (like app + node configs).
-  "files": [],
-
-  // Project References:
-  // This tells TypeScript: "These are separate sub-projects you must manage"
-  "references": [
-    {
-      // Main application code (everything inside /src)
-      "path": "./tsconfig.app.json"
-    },
-    {
-      // Node/tooling files like drizzle.config.ts, vite.config.ts, etc.
-      "path": "./tsconfig.node.json"
-    }
-  ]
+  "compilerOptions": {
+    // Language & Environment
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    
+    // Output
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "declaration": false,
+    "removeComments": true,
+    "noEmitOnError": true,
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+    
+    // Strictness (CRITICAL for production)
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "exactOptionalPropertyTypes": true,
+    
+    // Module Resolution
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    
+    // Performance
+    "skipLibCheck": true,
+    
+    // Node.js
+    "types": ["node"],
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "coverage", "**/*.test.ts", "**/*.spec.ts"]
 }
