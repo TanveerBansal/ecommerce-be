@@ -1,9 +1,9 @@
-export enum UserStatusEnum {
+export enum CustomerStatusEnum {
   ACTIVE = "active",
   INACTIVE = "inactive",
 }
 
-export enum UserSignupSource {
+export enum CustomerSignupSource {
   PLATFORM=  'platform',
   GOOGLE=  'google',
 }

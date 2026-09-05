@@ -1,11 +1,10 @@
 import * as readline from "readline";
 
-import { seedUsers } from "./users.seed.js";
-import { seedProducts } from "./products.seed.js";
+
 
 const seeds = {
-  "1": { name: "Users", fn: seedUsers },
-  "2": { name: "Products", fn: seedProducts },
+  "1": { name: "Customers", fn: ()=>{} },
+  "2": { name: "Products", fn: ()=> {} },
 };
 
 function showMenu() {

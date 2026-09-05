@@ -1,1 +1,1 @@
-export * from "./users.schema.js";
+export * from "./customers.schema.js";
