@@ -2,7 +2,7 @@ import pino, { Logger as PinoLogger } from "pino";
 import { env } from "../../config/env.js";
 class Logger {
   private enabled: boolean;
-   private _pino: PinoLogger;
+  private _pino: PinoLogger;
 
   constructor(_pino?: PinoLogger, enabled?: boolean) {
     this._pino =
@@ -37,16 +37,22 @@ class Logger {
     if (this.enabled) this._pino.fatal(...args);
   }
 
-   // ─── bypass the enabled check ───
-  force = {
-    info:  (...args: Parameters<PinoLogger['info']>)  => this._pino.info(...args),
-    warn:  (...args: Parameters<PinoLogger['warn']>)  => this._pino.warn(...args),
-    error: (...args: Parameters<PinoLogger['error']>) => this._pino.error(...args),
-    fatal: (...args: Parameters<PinoLogger['fatal']>) => this._pino.fatal(...args),
-  };
+  // ─── bypass the enabled check ───
+  get force() {
+    return {
+      info: (...args: Parameters<PinoLogger["info"]>) => this._pino.info(...args),
+      warn: (...args: Parameters<PinoLogger["warn"]>) => this._pino.warn(...args),
+      error: (...args: Parameters<PinoLogger["error"]>) => this._pino.error(...args),
+      fatal: (...args: Parameters<PinoLogger["fatal"]>) => this._pino.fatal(...args),
+    };
+  }
+
+  get pinoInstance(): PinoLogger {
+    return this._pino;
+  }
 
   // Child logger — also respects enabled flag
-   child(bindings: Record<string, unknown>): Logger {
+  child(bindings: Record<string, unknown>): Logger {
     return new Logger(this._pino.child(bindings), this.enabled);
   }
 }

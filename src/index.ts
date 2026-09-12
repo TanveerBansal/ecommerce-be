@@ -1,49 +1,51 @@
-import fastify from "fastify";
+import { app } from "./app.js";
 import { env } from "./config/env.js";
-import { HttpError } from "./shared/helpers/HttpError.js";
+import { checkDatabaseConnection, closeDatabaseConnection } from "./db/index.js";
 
-const app = fastify();
+// Graceful shutdown
+const shutdown = async (signal: string) => {
+  app.log.info(`${signal} received. Shutting down...`);
 
-/**
- * Fastify does not automatically know how to convert our custom
- * HttpError class into an HTTP response.
- *
- * Register a global error handler so that whenever a route/service
- * throws HttpError, Fastify can:
- *   1. Use the statusCode from the error
- *   2. Return our custom JSON response format
- *
- * Without this handler, Fastify would treat HttpError as a normal Error
- * and return its default error response structure.
- */
-app.setErrorHandler((error, request, reply) => {
-  if (error instanceof HttpError) {
-    return reply.status(error.statusCode).send({
-      message: error.message,
-      error: error.error,
-    });
-  }
-
-  request.log.error(error);
-
-  return reply.status(500).send({
-    message: "Internal Server Error",
-    error: "INTERNAL_SERVER_ERROR",
-  });
-});
-
-app.get("/", () => {
-  return { status: "ok" };
-});
-
-const start = async () => {
   try {
-    await app.listen({ port: 3001 });
-    app.log.info(`Server running on ${env.PORT}`);
-  } catch (err) {
-    app.log.error(err);
+    // Stop accepting new requests
+    await app.close();
+
+    // Close PostgreSQL connections
+    await closeDatabaseConnection();
+
+    app.log.info("✅ Server and database shut down cleanly");
+
+    process.exit(0);
+  } catch (error) {
+    app.log.error(error);
     process.exit(1);
   }
 };
 
-start();
+// Signal Terminate
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
+
+async function startServer() {
+  try {
+    // Check database before accepting requests
+    await checkDatabaseConnection();
+
+    // Start Fastify
+    await app.listen({
+      port: env.PORT,
+      host: "0.0.0.0",
+    });
+
+    app.log.info(`Server running on port ${env.PORT}`);
+  } catch (error) {
+    app.log.error(error, 'Server start error');
+    await closeDatabaseConnection();
+    process.exit(1);
+  }
+}
+
+startServer().catch((err) => {
+  app.log.error({ err }, "Fatal startup error");
+  process.exit(1);
+});
