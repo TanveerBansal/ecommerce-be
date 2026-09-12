@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@fastify/swagger": "^9.8.1",
-    "@fastify/swagger-ui": "^6.1.0",
+    "@fastify/swagger-ui": "^6.1.1",
     "@types/jsonwebtoken": "^9.0.10",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
