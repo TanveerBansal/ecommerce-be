@@ -5,6 +5,8 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "local"]),
   PORT: z.coerce.number(),
   DATABASE_URL: z.string(),
+  REDIS_URL: z.string(),
+  LOG_ENABLED: z.enum(['true', 'false'])
 });
 
 const parsed = envSchema.safeParse(process.env);
